@@ -1,13 +1,19 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const taskController = require("./controllers/TaskController");
-const app = express();
+
+var express = require('express');
+var bodyParser = require('body-parser')
+var app = express(); 
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+io.on('connection', () =>{
+  console.log('a user is connected')
+})
 // db connection
 require("./config/db");
 
 
 
-const port = process.env.PORT || 3301;
+const port = process.env.PORT || 4001;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -17,7 +23,8 @@ app.use('/api', require("./router"))
 
 
 
+ 
 
-app.listen(port, () => {
+var server = http.listen(port, () => {
   console.log(`Server (Açmak için ctrl + Left click) http://localhost:${port}`);
 });
