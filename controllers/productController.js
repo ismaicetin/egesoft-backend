@@ -3,6 +3,13 @@ const Products = require("../models/Products");
 
 
 exports.listAllProducts = (req, res) => {
+ /*
+    req.db.collection("chocolates").find({})
+         .toArray()
+         .then(results => {
+              res.status(200).send(results)
+          })
+*/
     Products.find({}, (err, Products) => {
         if (err) {
             res.status(500).send(err);

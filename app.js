@@ -4,6 +4,7 @@ var bodyParser = require('body-parser')
 var app = express(); 
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var db = require("./config/db");
 
 io.on('connection', socket => {
   console.log('New client connected')
@@ -13,9 +14,11 @@ io.on('connection', socket => {
 })
 
 // db connection
-require("./config/db");
+
+app.use(db.dbconnection);
 
 
+app.use(bodyParser.json());
 
 const port = process.env.PORT || 4001;
 app.use(bodyParser.urlencoded({ extended: true }));
