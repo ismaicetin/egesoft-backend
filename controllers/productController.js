@@ -1,11 +1,4 @@
-const express = require("express");
-const http = require('http')
-const socketIO = require('socket.io')
-const app = express();
-const server = http.createServer(app);
-const io = socketIO(server)
-
-
+const express = require("express"); 
 const Products = require("../models/Products");
 
 
@@ -14,6 +7,7 @@ exports.listAllProducts = (req, res) => {
         if (err) {
             res.status(500).send(err);
         }
+        req.sockets.emit('products', Products)
         res.status(200).json(Products);
     });
 };
@@ -24,7 +18,7 @@ exports.createNewProduct =  (req, res) => {
     newProducts.save((err, Products) => {
         if (err) {
             let getProducts =  Products.find({});
-            io.emit('Products', getProducts);
+            req.sockets.emit('Products', getProducts);
             res.status(500).send(err);
         }
         res.status(201).json(Products);
@@ -58,7 +52,7 @@ exports.updateProduct = async (req, res) => {
         (err, Products) => {
             if (err) {
                 let getProducts = Products.find({});
-                io.emit('Products', getProducts);
+                req.sockets.emit('Products', getProducts);
                 res.status(500).send(err);
             }
             res.status(200).json(Products);
@@ -72,7 +66,7 @@ exports.deleteProduct = (req, body) => {
             res.status(404).send(err);
         }
         let getProducts =  Products.find({});
-        io.emit('Products', getProducts);
+        req.sockets.emit('Products', getProducts);
         res.status(200).json({ message: "Products successfully deleted" });
     });
 };
@@ -95,7 +89,7 @@ exports.updatePrice = async (req, res) => {
                 res.status(500).send(err);
             }
             let getProducts =  Products.find({});
-            io.emit('Products', getProducts);
+            req.sockets.emit('Products', getProducts);
             res.status(200).json(Products);
         }
     );
@@ -120,7 +114,7 @@ exports.updateStock = async (req, res) => {
                 res.status(500).send(err);
             }
             let getProducts =  Products.find({});
-            io.emit('Products', getProducts);
+            req.sockets.emit('Products', getProducts);
             res.status(200).json(Products);
         }
     );
