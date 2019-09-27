@@ -9,7 +9,7 @@ const options = {
   useUnifiedTopology: true
 };
 
-
+/*
 exports.dbconnection= function (req, res, next) { 
 
   mongoose.connect(dbURI, options,function(err,db){
@@ -24,4 +24,14 @@ exports.dbconnection= function (req, res, next) {
     }
   })
 
-}
+}*/
+
+
+mongoose.connect(dbURI, options).then(
+  () => {
+    console.log("Veritabanına baglanıldı");
+  },
+  err => {
+    console.log("Veritabanı hatası: ", err);
+  }
+);

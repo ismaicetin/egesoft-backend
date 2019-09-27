@@ -10,6 +10,9 @@ exports.listAllProducts = (req, res) => {
               res.status(200).send(results)
           })
 */
+const query = req.query;
+console.log(query);
+
     Products.find({}, (err, Products) => {
         if (err) {
             res.status(500).send(err);

@@ -2,20 +2,23 @@
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express(); 
+const cors = require('cors');
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var db = require("./config/db");
 
+app.use(cors());
+
 io.on('connection', socket => {
-  console.log('New client connected')
+  console.log('kullanıcı baglandı')
   socket.on('disconnect', () => {
-    console.log('user disconnected')
+    console.log('kullanıcı baglantıyı kesti')
   })
 })
 
 // db connection
-
-app.use(db.dbconnection);
+require("./config/db");
+//app.use(db.dbconnection);
 
 
 app.use(bodyParser.json());
