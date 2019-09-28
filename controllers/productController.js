@@ -12,40 +12,52 @@ exports.listAllProducts = (req, res) => {
 */
 const query = req.query;
 console.log(query);
-
-    Products.find({}, (err, Products) => {
+var q={}
+if (query.category) {q={"productCategory" :{ $in: query.category.split(",") } }}
+console.log(q);
+    Products.find(q, (err, emitProducts) => {
         if (err) {
             res.status(500).send(err);
         }
-        req.sockets.emit('products', Products)
-        res.status(200).json(Products);
+        let emitData={
+            type:0,//list
+            data:emitProducts
+        }
+        req.sockets.emit('products', emitData)
+        res.status(200).json(emitProducts);
     });
 };
 
 exports.createNewProduct =  (req, res) => {
     let payload = req.body;
     var newProducts = new Products(payload);
-    newProducts.save((err, Products) => {
+    newProducts.save((err, ProductsData) => {
         if (err) {
-            let getProducts =  Products.find({});
-            req.sockets.emit('Products', getProducts);
             res.status(500).send(err);
         }
-        res.status(201).json(Products);
+        Products.findById(ProductsData._id, (err, emitProducts) => {
+            if (err) {console.log(err)}
+            let emitData={
+                type:1,//create
+                data:emitProducts
+            }
+            req.sockets.emit('products', emitData)
+        });
+        res.status(201).json(ProductsData);
     });
 };
 
 exports.getByIdProduct = async (req, res) => {
-    Products.findById(req.params.productId, (err, Products) => {
+    Products.findById(req.params.productId, (err, ProductsData) => {
         if (err) {
             res.status(500).send(err);
         }
-        res.status(200).json(Products);
+        res.status(200).json(ProductsData);
     });
 };
 
 exports.updateProduct = async (req, res) => {
-    let getProducts = await Products.findById(req.params.productId);
+   /* let getProducts = await Products.findById(req.params.productId);
     let payload = req.body;
     //console.log(getProducts); 
     if (!payload.productCategory || !payload.productCategory || !payload.productCategory) {
@@ -55,78 +67,42 @@ exports.updateProduct = async (req, res) => {
 
     getProducts.productCategory = payload.productCategory;
     getProducts.productImage = payload.productImage;
-    getProducts.productName = payload.productName;
-    Products.findOneAndUpdate(
-        { _id: req.params.productId }, getProducts,
+    getProducts.productName = payload.productName;*/
+    await Products.findOneAndUpdate(
+        { _id: req.params.productId }, req.body,
         { new: true },
-        (err, Products) => {
+        (err, ProductsData) => {
             if (err) {
-                let getProducts = Products.find({});
-                req.sockets.emit('Products', getProducts);
                 res.status(500).send(err);
             }
-            res.status(200).json(Products);
+            Products.findById(ProductsData._id, (err, emitProducts) => {
+                if (err) {console.log(err)}
+                let emitData={
+                    type:2,//updata
+                    data:emitProducts
+                }
+                req.sockets.emit('products', emitData)
+            });
+            res.status(200).json(ProductsData);
         }
     );
 };
 
-exports.deleteProduct = (req, body) => {
-    Products.remove({ _id: req.params.productId }, (err, Products) => {
+exports.deleteProduct = (req, res) => {
+    Products.remove({ _id: req.params.productId }, (err, ProductsData) => {
         if (err) {
             res.status(404).send(err);
         }
-        let getProducts =  Products.find({});
-        req.sockets.emit('Products', getProducts);
+        Products.findById(ProductsData._id, (err, emitProducts) => {
+            if (err) {console.log(err)}
+            let emitData={
+                type:3,//delete
+                data:{_id:req.params.productId}
+            }
+            req.sockets.emit('products', emitData)
+        });
         res.status(200).json({ message: "Products successfully deleted" });
     });
 };
 
-
-exports.updatePrice = async (req, res) => {
-    let getProducts = await Products.findById(req.params.productId);
-    let payload = req.body;
-    //console.log(getProducts); 
-    if (!payload.productPrice) {
-        res.status(500).json({ "message": "Eksik veri girdiniz" });
-        return;
-    }
-    getProducts.productPrice = payload.productPrice;
-    Products.findOneAndUpdate(
-        { _id: req.params.productId }, getProducts,
-        { new: true },
-        (err, Products) => {
-            if (err) {
-                res.status(500).send(err);
-            }
-            let getProducts =  Products.find({});
-            req.sockets.emit('Products', getProducts);
-            res.status(200).json(Products);
-        }
-    );
-};
-
-
-exports.updateStock = async (req, res) => {
-    let getProducts = await Products.findById(req.params.productId);
-    let payload = req.body;
-    //console.log(getProducts); 
-    if (!payload.productStok) {
-        res.status(500).json({ "message": "Eksik veri girdiniz" });
-        return;
-    }
-    getProducts.productStok = payload.productStok;
-
-    Products.findOneAndUpdate(
-        { _id: req.params.productId }, getProducts,
-        { new: true },
-        (err, Products) => {
-            if (err) {
-                res.status(500).send(err);
-            }
-            let getProducts =  Products.find({});
-            req.sockets.emit('Products', getProducts);
-            res.status(200).json(Products);
-        }
-    );
-};
 

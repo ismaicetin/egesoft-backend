@@ -8,18 +8,18 @@ const categoryController = require("./controllers/categoryController");
 
 router.get      ('/products',                                   productController.listAllProducts)     
 router.post     ('/productManagement',                          productController.createNewProduct)  
-//router.get    ('/productManagement/:productId',               productController.getByIdProduct)        
-//router.put    ('/productManagement/:productId',               productController.updateProduct)     
+router.get    ('/productManagement/:productId',               productController.getByIdProduct)        
+router.put    ('/productManagement/:productId',               productController.updateProduct)     
 router.delete   ('/productManagement/:productId',               productController.deleteProduct)  
-router.post     ('/productManagement/:productId/priceUpdate',   productController.updatePrice)   
-router.post     ('/productManagement/:productId/stockUpdate',   productController.updateStock)         
+router.put     ('/productManagement/:productId/priceUpdate',   productController.updateProduct)   
+router.put     ('/productManagement/:productId/stockUpdate',   productController.updateProduct)         
 
 
 router.get    ('/categories',                                   categoryController.listAllCategorys)     
 router.post   ('/categoryManagement',                           categoryController.createNewCategory)  
-//router.get  ('/categoryManagement/:categoryId',               categoryController.readCategory)        
-//router.put  ('/categoryManagement/:categoryId',               categoryController.updateCategory)     
-router.delete ('/categoryManagement/:categorytId',              categoryController.deleteCategory)        
+router.get  ('/categoryManagement/:categoryId',               categoryController.readCategory)        
+router.put  ('/categoryManagement/:categoryId',               categoryController.updateCategory)     
+router.delete ('/categoryManagement/:categoryId',              categoryController.deleteCategory)        
 
  
 

@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-restapi",
+  "name": "nodejs-egesoft",
   "version": "0.1.0",
   "description": "",
   "main": "app.js",
@@ -8,8 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "Aman Mittal <amandeepmittal@live.com> (http://amandeepmittal.github.io/)",
-  "license": "MIT",
+  "author": "", 
   "dependencies": {
     "body-parser": "1.18.2",
     "cors": "^2.8.5",

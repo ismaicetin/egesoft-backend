@@ -27,7 +27,7 @@ exports.createNewCategory = (req, res) => {
 };
 
 exports.readCategory = (req, res) => {
-  Category.findById(req.params.categorytId, (err, Category) => {
+  Category.find({ categoryId: req.params.categoryId }, (err, Category) => {
     if (err) {
       res.status(500).send(err);
     }
@@ -37,7 +37,7 @@ exports.readCategory = (req, res) => {
 
 exports.updateCategory = (req, res) => {
   Category.findOneAndUpdate(
-    { categoryId: req.params.categorytId },
+    { categoryId: req.params.categoryId },
     req.body,
     { new: true },
     (err, Category) => {
@@ -49,8 +49,8 @@ exports.updateCategory = (req, res) => {
   );
 };
 
-exports.deleteCategory = (req, body) => {
-  Category.remove({ categoryId: req.params.categorytId }, (err, Category) => {
+exports.deleteCategory = (req, res) => {
+  Category.remove({ categoryId: req.params.categoryId }, (err, Category) => {
     if (err) {
       res.status(404).send(err);
     }
